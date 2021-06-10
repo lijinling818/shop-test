@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="app">
+    <input type="text" v-model="title" />
+    <input type="text" @input="changeTitle" />
+</div>
+</body>
+<script src="https://cdn.bootcss.com/vue/2.5.17-beta.0/vue.min.js"></script>
+<script>
+    new  Vue({
+        el:"#app",
+        data:{
+          title:"helloVue!",
+        },
+        methods:{
+            changeTitle(){
+
+            }
+        }
+    })
+
+
+</script>
+</html>

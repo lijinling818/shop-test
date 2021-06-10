@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <link rel="stylesheet" href="../js/bootstrap/css/bootstrap.min.css">
+    <link rel="icon" href="../js/shop/assets/img/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../js/shop/css/webbase.css" />
+    <link rel="stylesheet" type="text/css" href="../js/shop/css/pages-JD-index.css" />
+    <link rel="stylesheet" type="text/css" href="../js/shop/css/widget-jquery.autocomplete.css" />
+    <link rel="stylesheet" type="text/css" href="../js/shop/css/widget-cartPanelView.css" />
+    <title>登录页面</title>
+</head>
+<body>
+<!--列表-->
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">会员登录</h3>
+                </div>
+                <div class="panel-body">
+                    <form class="form-horizontal" id="serach_from">
+                        <div class="form-group">
+                            <label  class="col-sm-2 control-label">会员名:</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control" id="memberName"  placeholder="请输入学生会员名">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label  class="col-sm-2 control-label">密码:</label>
+                            <div class="col-sm-4">
+                                <input type="password" class="form-control" id="password" placeholder="请输入密码">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button type="button" class="btn btn-success" onclick="addMember();"></span>登录</button>
+    <button type="reset" class="btn btn-danger">重置</button>
+    <p><a href="forgetPassword.html" data-target="forget">忘记密码?</a></p>
+</div>
+
+<script src="../js/jquery-3.3.1.js"></script>
+<script src="../js/jquery.cookie.min.js"></script>
+<script src="../js/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../js/shop/js/pages/index.js"></script>
+<script src="../js/common/common.js"></script>
+
+<script>
+    function addMember(){
+        var v_param={};
+        v_param.memberName=$("#memberName").val();
+        v_param.password=$("#password").val();
+        if(v_param.memberName=="" || v_param.password==""
+        ){
+            alert("会员信息不能为空");
+            return false;
+        }
+
+        $.ajax({
+            type:"post",
+            url:"http://localhost:9000/member/api/login",
+            data:{"memberName":v_param.memberName,"password":v_param.password},
+            success:function (res) {
+                if (res.code ==200){
+                    var  v_token =res.data;
+                    //将服务端响应给客户端的信息存入到cookie中
+                    $.cookie("token",v_token);
+                    //跳转到首页
+                    location.href="index.html";
+                }else if (res.code==4009){
+                    //4009用户未激活 ，就带着信息来发邮件，激活用户
+                    $.cookie("memberData",JSON.stringify(res.data));
+                    alert("用户未激活");
+                    location.href="active.html";
+                }
+
+            }
+        })
+    }
+
+
+</script>
+</body>
+</html>

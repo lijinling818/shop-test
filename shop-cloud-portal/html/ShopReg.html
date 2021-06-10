@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+
+    <link rel="stylesheet" href="../js/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../js/shop/css/webbase.css" />
+    <link rel="stylesheet" type="text/css" href="../js/shop/css/pages-JD-index.css" />
+    <link rel="stylesheet" type="text/css" href="../js/shop/css/widget-jquery.autocomplete.css" />
+    <link rel="stylesheet" type="text/css" href="../js/shop/css/widget-cartPanelView.css" />
+    <title>注册页面</title>
+</head>
+<body>
+
+
+
+<!--列表-->
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">会员注册</h3>
+                </div>
+
+                <div class="panel-body">
+                    <form class="form-horizontal" id="registerForm">
+                        <div class="form-group">
+                            <label  class="col-sm-2 control-label">会员名:</label>
+                            <div class="col-sm-4">
+                                <input class="form-control" type="text" placeholder="会员名" required="required" id="memberName" name="memberName" autocomplete="off">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label  class="col-sm-2 control-label">昵称:</label>
+                            <div class="col-sm-4">
+                                <input class="form-control" type="text" placeholder="昵称" required="required" id="nickName" name="nickName" autocomplete="off">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label  class="col-sm-2 control-label">密码:</label>
+                            <div class="col-sm-4">
+                                <input class="form-control" type="password" placeholder="密码" required="required" id="password" name="password" autocomplete="off">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label  class="col-sm-2 control-label">确认密码:</label>
+                            <div class="col-sm-4">
+                                <input class="form-control" type="password" placeholder="确认密码" required="required" id="confirmPassword" name="confirmPassword" autocomplete="off">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label  class="col-sm-2 control-label">邮箱:</label>
+                            <div class="col-sm-4">
+                                <input class="form-control" type="text" placeholder="会员名" required="required" id="mail" name="mail" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label  class="col-sm-2 control-label">手机号：</label>
+                            <div class="col-sm-4">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="请输入手机号" id="phone" name="phone" required="required" autocomplete="off">
+                                    <span class="input-group-addon" >获取验证码</span>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label  class="col-sm-2 control-label">验证码:</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control" id="code" name="code" placeholder="请输入验证码">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+<div style="text-align: center;">
+    <button type="submit" class="btn btn-success" onclick="addMember()">提交</button>
+    <button type="reset" class="btn btn-danger">重置</button>
+</div>
+
+
+
+
+
+</div>
+
+
+
+
+<script src="../js/jquery-3.3.1.js"></script>
+<script src="../js/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../js/shop/js/pages/index.js"></script>
+<!-- 引入validator js css -->；
+<script type="text/javascript" src="../js/bootstrapValidator/js/bootstrapValidator.js"></script>
+<link href="../js/bootstrapValidator/css/bootstrapValidator.css" rel="stylesheet">
+
+<script>
+
+    $(function(){
+        yzRegisterForm();//注册验证
+    })
+
+
+
+    function getSmS() {
+        var phone = $("#phone").val();
+        $.ajax({
+            type:"post",
+            url:"http://localhost:8088/sms/sendCode",
+            data:{"phone":phone},
+            success:function (res) {
+
+                if(res.code==200){
+                   alert("发送成功！");
+                }else {
+                    alert(res.message);
+                }
+            }
+        })
+    }
+
+
+    function addMember() {
+        yzRegisterResult.data("bootstrapValidator").validate();//显示校验效果
+        //取得校验结果
+        var rs = yzRegisterResult.data("bootstrapValidator").isValid();//获取校验结果
+        if (rs) {
+            var v_param = {};
+            v_param.memberName = $("#memberName").val();
+            v_param.nickName = $("#nickName").val();
+            v_param.password = $("#password").val();
+            v_param.confirmPassword = $("#confirmPassword").val();
+            v_param.mail = $("#mail").val();
+            v_param.phone = $("#phone").val();
+            v_param.code = $("#code").val();
+
+            $.ajax({
+                type: "post",
+                url: "http://localhost:8088/member/addMember",
+                data: v_param,
+                success: function (res) {
+                    if (res.code == 200) {
+                        alert("注册成功！");
+                    } else {
+                        alert(res.message);
+                    }
+                }
+            })
+        }
+    }
+
+    function yzRegisterForm(){
+        yzRegisterResult=$('#registerForm').bootstrapValidator({
+            feedbackIcons: {//提示图标
+                valid: 'glyphicon glyphicon-ok',//验证通过的图标
+                invalid: 'glyphicon glyphicon-remove',//不通过的图标
+                validating: 'glyphicon glyphicon-refresh'//正在验证中
+            },
+            fields: {//指定要验证那些字段    form的name属性
+                memberName: {
+                    validators: {//具体的验证规则
+                        notEmpty: {//非空校验
+                            message: '会员名字不能为空'
+                        },
+                        stringLength: {//长度限制
+                            min: 3,
+                            max: 12,
+                            message: '账号长度不能小于3位或超过12位'
+                        },remote:{/* //远程校验   发起请求     {"valid":false} //表示不合法，验证不通过  {"valid":true} //表示合法，验证通过 */
+                            url:"http://localhost:8088/member/checkMemberName",
+                            message: '该会员已存在',//提示消息
+                            delay :  1000,//每输入一个字符，就发ajax请求，服务器压力还是太大，设置2秒发送一次ajax（默认输入一个字符，提交一次，服务器压力太大）
+                            type: 'POST'//请求方式
+                        }
+                    }
+                },
+                nickName: {
+                    validators: {//具体的验证规则
+                        notEmpty: {//非空校验
+                            message: '昵称不能为空'
+                        },
+                        stringLength: {//长度限制
+                            min: 3,
+                            max: 12,
+                            message: '账号长度不能小于3位或超过12位'
+                          }
+                        }
+                    },
+
+                    password: {
+                        validators: {
+                            notEmpty: {
+                                message: '密码不能为空'
+                            }, identical: {
+                                field: 'confirmPassWord',
+                                message: '用户新密码与确认密码不一致！'
+                            }
+                        }
+                    },
+                    confirmPassword: {
+                        validators: {//具体的验证规则
+                            notEmpty: {//非空校验
+                                message: '新密码不能为空'
+                            }, identical: {
+                                field: 'password',
+                                message: '用户新密码与确认密码不一致！'
+                            }
+                        }
+                    },
+                phone: {
+                    validators: {//具体的验证规则
+                        notEmpty: {//非空校验
+                            message: '手机号不能为空'
+                        },
+                        stringLength: {//长度限制
+                            min: 11,
+                            max: 11,
+                            message: '手机号长度为11位'
+                        },remote:{/* //远程校验   发起请求     {"valid":false} //表示不合法，验证不通过  {"valid":true} //表示合法，验证通过 */
+                            url:"http://localhost:8088/member/checkPhone",
+                            message: '该手机号已存在',//提示消息
+                            delay :  1000,//每输入一个字符，就发ajax请求，服务器压力还是太大，设置2秒发送一次ajax（默认输入一个字符，提交一次，服务器压力太大）
+                            type: 'POST'//请求方式
+                        }
+                    }
+                },
+                mail: {
+                    validators: {//具体的验证规则
+                        notEmpty: {//非空校验
+                            message: '邮箱不能为空'
+                        },
+                        stringLength: {//长度限制
+                            min: 1,
+                            max: 20,
+                            message: '请输入正确的邮箱'
+                        },remote:{/* //远程校验   发起请求     {"valid":false} //表示不合法，验证不通过  {"valid":true} //表示合法，验证通过 */
+                            url:"http://localhost:8088/member/checkMail",
+                            message: '该邮箱已存在',//提示消息
+                            delay :  1000,//每输入一个字符，就发ajax请求，服务器压力还是太大，设置2秒发送一次ajax（默认输入一个字符，提交一次，服务器压力太大）
+                            type: 'POST'//请求方式
+                        }
+                    }
+                },
+                code: {
+                    validators: {//具体的验证规则
+                        notEmpty: {//非空校验
+                            message: '验证码不能为空'
+                        },
+                        stringLength: {//长度限制
+                            min: 4,
+                            max: 5,
+                            message: '账号长度不能小于4位或超过5位'
+                        }
+                    }
+                },
+            }
+
+        })
+    }
+
+</script>
+</body>
+</html>

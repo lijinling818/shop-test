@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+
+    <link rel="stylesheet" href="../js/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../js/shop/css/webbase.css" />
+    <link rel="stylesheet" type="text/css" href="../js/shop/css/pages-JD-index.css" />
+    <link rel="stylesheet" type="text/css" href="../js/shop/css/widget-jquery.autocomplete.css" />
+    <link rel="stylesheet" type="text/css" href="../js/shop/css/widget-cartPanelView.css" />
+
+
+</head>
+<body>
+
+
+
+<h1>用户未激活，请登录邮箱<a href="#" onclick="sendActive()"> 激活</a>后使用！</h1>
+<h1>用户未激活，请登录邮箱<a href="#" onclick="sendActive2()"> 激活2</a>后使用！</h1>
+
+</body>
+
+<script>
+    function sendActive() {
+        //从cookie中获取要传到后台的mail.和uuid
+        var v_memberData=$.cookie("memberData");
+        $.ajax({
+            type:"post",
+            url:server_host+"/sendActive",
+            contentType:"application/json",
+            data:v_memberData,
+            success:function (res) {
+                if (res.code==200){
+                    //发送激活邮件成功，删除cookie
+                    $.removeCookie("memberData");
+                    location.href="success.html";
+                }
+            }
+        })
+
+    }
+
+    function sendActive2()
+    {
+        //从cookie中获取要传到后台的mail.和uuid
+        var v_memberData=$.cookie("memberData");
+        //如何将json格式的字符串转为json对象呢？
+        var v_param=eval('('+v_memberData+')');
+        $.ajax({
+            type:"post",
+            url:server_host+"/sendActive2",
+            data:v_param,
+            success:function (res) {
+                if (res.code==200){
+                    //发送激活邮件成功，删除cookie
+                    $.removeCookie("memberData");
+                    location.href="success.html";
+                }
+            }
+        })
+
+    }
+</script>
+
+
+
+
+
+
+</html>

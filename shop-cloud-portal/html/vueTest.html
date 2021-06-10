@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="app">
+学生姓名：<input type="text" v-model="stuName"/>
+学生年龄：<input type="text" v-model="age"/>
+    <input type="button" @click="addStudent()" value="增加学生">
+    <input type="button" @click="deleteBatch()" value="批量删除">
+    <input type="button" @click="updateStudent()" value="修改学生">
+<table v-show="students.length > 0 ">
+    <tr>
+        <th>学生姓名</th>
+        <th>学生年龄</th>
+    </tr>
+    <tr v-for="(student,index) in students">
+        <td>{{student.stuName}}</td>
+        <td>{{student.age}}</td>
+        <td><input type="button" value="删除" @click="deleteOne(index)"/></td>
+        <td><input type="button" value="编辑" @click="updateStu(index)"/></td>
+    </tr>
+
+</table>
+    <th v-show="students.length == 0" > 没有数据了！</th>
+
+</div>
+<script src="https://cdn.bootcss.com/vue/2.5.17-beta.0/vue.min.js"></script>
+</body>
+<script>
+    new Vue({
+        el:"#app",
+        data:{
+            stuName:"",
+            age:"",
+            students:[],
+            index:-1
+        },
+        methods:{
+            addStudent(){
+                var student={};
+                student.stuName=this.stuName;
+                student.age=this.age;
+                this.students.push(student);
+                this.stuName="";
+                this.age="";
+            },
+            deleteOne(i){
+                this.students.splice(i,1);
+            },
+            deleteBatch(){
+                this.students=[];
+            },
+            updateStu(i){
+                this.stuName=this.students[i].stuName;
+                this.age=this.students[i].age;
+                this.index=i;
+            },
+            updateStudent(){
+                this.students[this.index].stuName=this.stuName;
+                this.students[this.index].age=this.age;
+                this.stuName="";
+                this.age="";
+
+            }
+        },
+
+    })
+</script>
+</html>
